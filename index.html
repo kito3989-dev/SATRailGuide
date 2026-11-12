@@ -23,8 +23,55 @@
       <a href="#conseils">Conseils & sécurité</a>
       <a href="#evenements">Événements</a>
       <a href="#apropos">À propos</a>
+      <a href="#espace-membre">Espace membre</a>
     </nav>
   </header>
+
+  <section id="espace-membre" class="section-wrap">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow eyebrow-green">SATRailGuide</p>
+      <h2>Espace membre</h2>
+      <p>Connectez-vous ou créez votre compte pour participer à nos activités.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Connexion</h3>
+
+    <form id="member-login-form">
+      <label>Prénom</label>
+      <input type="text" name="first_name" required>
+
+      <label>Nom</label>
+      <input type="text" name="last_name" required>
+
+      <label>Mot de passe</label>
+      <input type="password" name="password" required>
+
+      <button type="submit">Se connecter</button>
+      <p id="member-login-message"></p>
+    </form>
+
+    <hr>
+
+    <h3>Créer un compte</h3>
+
+    <form id="member-signup-form">
+      <label>Prénom</label>
+      <input type="text" name="first_name" required>
+
+      <label>Nom</label>
+      <input type="text" name="last_name" required>
+
+      <label>Mot de passe</label>
+      <input type="password" name="password" minlength="8" required>
+
+      <button type="submit">Créer mon compte</button>
+      <p id="member-signup-message"></p>
+    </form>
+  </div>
+</section>
 
   <main>
     <section class="hero" id="accueil">
