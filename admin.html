@@ -1060,6 +1060,44 @@ function resetEventForm() {
 
 $("cancelEventEdit").addEventListener("click", resetEventForm);
 
+  // AJOUT / MODIFICATION D'UN ÉVÉNEMENT
+$("eventForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const id = $("eventId").value;
+
+  const record = {
+    title: $("eventTitle").value.trim(),
+    category: $("eventCategory").value,
+    description: $("eventDescription").value.trim(),
+    event_date: new Date($("eventDate").value).toISOString(),
+    location: $("eventLocation").value.trim(),
+    duration_minutes: $("eventDuration").value
+      ? Number($("eventDuration").value)
+      : null,
+    max_participants: $("eventMaxParticipants").value
+      ? Number($("eventMaxParticipants").value)
+      : null,
+    participation_conditions: $("eventConditions").value.trim(),
+    image_url: $("eventImage").value.trim(),
+    status: $("eventStatus").value
+  };
+
+  const result = id
+    ? await db.from("events").update(record).eq("id", id)
+    : await db.from("events").insert(record);
+
+  if (result.error) {
+    showMessage("Erreur : " + result.error.message, true);
+    return;
+  }
+
+  showMessage("Événement enregistré avec succès.");
+
+  resetEventForm();
+  await loadEvents();
+});
+
   // AJOUT / MODIFICATION D'UN POINT D'INTÉRÊT
   $("poiForm").addEventListener("submit", async event => {
     event.preventDefault();
