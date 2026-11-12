@@ -178,17 +178,33 @@ async function loadEvents() {
         <p>${escapeHTML(item.description || "")}</p>
 
         <p>
-          <strong>Date :</strong>
-         ${item.event_date
-  ? new Date(item.event_date).toLocaleString("fr-CA", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    })
-  : "À déterminer"}
-        </p>
+        <div class="event-date-box">
+  ${
+    item.event_date
+      ? `
+        <span class="event-date-day">
+          ${new Date(item.event_date).toLocaleDateString("fr-CA", {
+            day: "numeric"
+          })}
+        </span>
+        <div class="event-date-details">
+          <strong>
+            ${new Date(item.event_date).toLocaleDateString("fr-CA", {
+              month: "long",
+              year: "numeric"
+            })}
+          </strong>
+          <span>
+            ${new Date(item.event_date).toLocaleTimeString("fr-CA", {
+              hour: "2-digit",
+              minute: "2-digit"
+            })}
+          </span>
+        </div>
+      `
+      : "<strong>Date à déterminer</strong>"
+  }
+</div>
 
         <p>
           <strong>Lieu :</strong>
