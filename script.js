@@ -335,13 +335,12 @@ document.addEventListener("submit", async (event) => {
   button.textContent = "Inscription en cours...";
   message.textContent = "";
 
-  const { error } = await supabaseClient
-    .from("event_registrations")
-   .insert({
-  event_id: eventId,
-  participant_name: participantName,
-  participant_phone: participantPhone
-});
+  const { data, error } = await supabaseClient
+    .rpc("register_for_event", {
+      p_event_id: eventId,
+      p_participant_name: participantName,
+      p_participant_phone: participantPhone
+    });
 
   if (error) {
     console.error("Erreur inscription :", error);
