@@ -633,23 +633,33 @@
   }
 
   // AFFICHAGE DES ÉVÉNEMENTS
-  function renderEvents() {
-    $("eventList").innerHTML = events.length
-      ? events.map(item => `
-        <div class="item">
-          <div>
-            <strong>${escapeHTML(item.title)}</strong>
-            <p>${escapeHTML(item.location)}</p>
-            ${statusBadge(item.published)}
-          </div>
-          <div>
-            <button onclick="editEvent(${item.id})">Modifier</button>
-            <button class="danger" onclick="deleteEvent(${item.id})">Supprimer</button>
-          </div>
+ function renderEvents() {
+  $("eventList").innerHTML = events.length
+    ? events.map(item => `
+      <div class="item">
+        <div>
+          <strong>${escapeHTML(item.title)}</strong>
+          <p>Catégorie : ${escapeHTML(item.category || "Non définie")}</p>
+          <p>Lieu : ${escapeHTML(item.location || "Non défini")}</p>
+          <p>Date : ${item.event_date
+            ? new Date(item.event_date).toLocaleString("fr-CA")
+            : "Non définie"}</p>
+          <p>Durée : ${item.duration_minutes
+            ? item.duration_minutes + " minutes"
+            : "Non définie"}</p>
+          <span class="status ${
+            item.status === "Publié" ? "published" : "draft"
+          }">${escapeHTML(item.status || "Brouillon")}</span>
         </div>
-      `).join("")
-      : "<p>Aucun événement enregistré.</p>";
-  }
+
+        <div>
+          <button onclick="editEvent(${item.id})">Modifier</button>
+          <button class="danger" onclick="deleteEvent(${item.id})">Supprimer</button>
+        </div>
+      </div>
+    `).join("")
+    : "<p>Aucun événement enregistré.</p>";
+}
 
   // AFFICHAGE DES POINTS D'INTÉRÊT
   function renderPoints() {
