@@ -337,7 +337,6 @@
     </section>
 
     <!-- ÉVÉNEMENTS -->
-    <!-- ÉVÉNEMENTS -->
 <section id="events" class="panel tab-content hidden">
   <h2>Gestion des événements</h2>
 
@@ -759,85 +758,100 @@
 
   $("cancelTrailEdit").addEventListener("click", resetTrailForm);
 
-  // AJOUT / MODIFICATION D'UN ÉVÉNEMENT
-  $("eventForm").addEventListener("submit", async event => {
-    event.preventDefault();
+// AJOUT / MODIFICATION D'UN ÉVÉNEMENT
 
-    const id = $("eventId").value;
-    const dateValue = $("eventDate").value;
+$("eventForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-    const record = {
-      title: $("eventTitle").value.trim(),
-      description: $("eventDescription").value.trim(),
-      location: $("eventLocation").value.trim(),
-      event_date: dateValue ? new Date(dateValue).toISOString() : null,
-      duration_minutes: $("eventDuration").value ? Number($("eventDuration").value) : null,
-      difficulty: $("eventDifficulty").value,
-      image_url: $("eventImage").value.trim(),
-      published: $("eventPublished").checked
-    };
+  const id = $("eventId").value;
+  const dateValue = $("eventDate").value;
+  const status = $("eventStatus").value;
 
-    const result = id
-      ? await db.from("events").update(record).eq("id", id)
-      : await db.from("events").insert(record);
+  const record = {
+    title: $("eventTitle").value.trim(),
+    category: $("eventCategory").value,
+    description: $("eventDescription").value.trim(),
+    location: $("eventLocation").value.trim(),
+    event_date: dateValue ? new Date(dateValue).toISOString() : null,
+    duration_minutes: $("eventDuration").value
+      ? Number($("eventDuration").value)
+      : null,
+    max_participants: $("eventMaxParticipants").value
+      ? Number($("eventMaxParticipants").value)
+      : null,
+    participation_conditions: $("eventConditions").value.trim(),
+    image_url: $("eventImage").value.trim(),
+    status: status,
+    published: status === "Publié"
+  };
 
-    if (result.error) {
-      showMessage(result.error.message, true);
-      return;
-    }
+  const result = id
+    ? await db.from("events").update(record).eq("id", id)
+    : await db.from("events").insert(record);
 
-    showMessage("Événement enregistré.");
-    resetEventForm();
-    await loadEvents();
-  });
-
-  function editEvent(id) {
-    const item = events.find(event => event.id === id);
-    if (!item) return;
-
-    $("eventId").value = item.id;
-    $("eventTitle").value = item.title || "";
-    $("eventDescription").value = item.description || "";
-    $("eventLocation").value = item.location || "";
-
-    if (item.event_date) {
-      const date = new Date(item.event_date);
-      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-      $("eventDate").value = localDate.toISOString().slice(0, 16);
-    } else {
-      $("eventDate").value = "";
-    }
-
-    $("eventDuration").value = item.duration_minutes ?? "";
-    $("eventDifficulty").value = item.difficulty || "Facile";
-    $("eventImage").value = item.image_url || "";
-    $("eventPublished").checked = item.published;
-
-    $("cancelEventEdit").classList.remove("hidden");
-    $("eventForm").scrollIntoView({ behavior: "smooth" });
+  if (result.error) {
+    showMessage(result.error.message, true);
+    return;
   }
 
-  async function deleteEvent(id) {
-    if (!confirm("Supprimer cet événement ?")) return;
+  showMessage("Événement enregistré.");
+  resetEventForm();
+  await loadEvents();
+});
 
-    const { error } = await db.from("events").delete().eq("id", id);
+function editEvent(id) {
+  const item = events.find(event => event.id === id);
+  if (!item) return;
 
-    if (error) {
-      showMessage(error.message, true);
-      return;
-    }
+  $("eventId").value = item.id;
+  $("eventTitle").value = item.title || "";
+  $("eventCategory").value = item.category || "";
+  $("eventDescription").value = item.description || "";
+  $("eventLocation").value = item.location || "";
 
-    showMessage("Événement supprimé.");
-    await loadEvents();
+  if (item.event_date) {
+    const date = new Date(item.event_date);
+    const localDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    );
+    $("eventDate").value = localDate.toISOString().slice(0, 16);
+  } else {
+    $("eventDate").value = "";
   }
 
-  function resetEventForm() {
-    $("eventForm").reset();
-    $("eventId").value = "";
-    $("cancelEventEdit").classList.add("hidden");
+  $("eventDuration").value = item.duration_minutes ?? "";
+  $("eventMaxParticipants").value = item.max_participants ?? "";
+  $("eventConditions").value = item.participation_conditions || "";
+  $("eventImage").value = item.image_url || "";
+
+  $("eventStatus").value = item.status ||
+    (item.published ? "Publié" : "Brouillon");
+
+  $("cancelEventEdit").classList.remove("hidden");
+  $("eventForm").scrollIntoView({ behavior: "smooth" });
+}
+
+async function deleteEvent(id) {
+  if (!confirm("Supprimer cet événement ?")) return;
+
+  const { error } = await db.from("events").delete().eq("id", id);
+
+  if (error) {
+    showMessage(error.message, true);
+    return;
   }
 
-  $("cancelEventEdit").addEventListener("click", resetEventForm);
+  showMessage("Événement supprimé.");
+  await loadEvents();
+}
+
+function resetEventForm() {
+  $("eventForm").reset();
+  $("eventId").value = "";
+  $("cancelEventEdit").classList.add("hidden");
+}
+
+$("cancelEventEdit").addEventListener("click", resetEventForm);
 
   // AJOUT / MODIFICATION D'UN POINT D'INTÉRÊT
   $("poiForm").addEventListener("submit", async event => {
