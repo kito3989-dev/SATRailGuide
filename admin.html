@@ -802,7 +802,8 @@ function previewTrail() {
 }
   
   // AFFICHAGE DES RANDONNÉES
-  function renderTrails() {
+```javascript
+function renderTrails() {
   $("trailList").innerHTML = trails.length
     ? trails.map(trail => `
       <div class="item">
@@ -823,12 +824,14 @@ function previewTrail() {
 
         <div>
           <button onclick="editTrail(${trail.id})">Modifier</button>
+          <button onclick="duplicateTrail(${trail.id})">Dupliquer</button>
           <button class="danger" onclick="deleteTrail(${trail.id})">Supprimer</button>
         </div>
       </div>
     `).join("")
     : "<p>Aucune randonnée enregistrée.</p>";
 }
+```
 
   // AFFICHAGE DES ÉVÉNEMENTS
 function renderEvents() {
