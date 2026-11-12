@@ -342,13 +342,14 @@ document.addEventListener("submit", async (event) => {
       p_participant_phone: participantPhone
     });
 
-  if (error) {
+  if (error || !data?.success) {
     console.error("Erreur inscription :", error);
 
-    if (error.code === "23505") {
+    if (error?.code === "23505") {
       message.textContent = "Vous êtes déjà inscrit à cet événement.";
     } else {
-      message.textContent = "Une erreur est survenue. Veuillez réessayer.";
+      message.textContent =
+        data?.message || "Une erreur est survenue. Veuillez réessayer.";
     }
 
     button.disabled = false;
