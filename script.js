@@ -145,6 +145,23 @@ async function loadEvents() {
     return;
   }
 
+  const { data: registrations, error: registrationError } =
+    await supabaseClient
+      .from("event_registrations")
+      .select("event_id");
+
+  if (registrationError) {
+    console.error("Erreur inscriptions :", registrationError);
+    return;
+  }
+
+  const registrationCounts = {};
+
+  (registrations || []).forEach(registration => {
+    registrationCounts[registration.event_id] =
+      (registrationCounts[registration.event_id] || 0) + 1;
+  });
+  
   const container = document.querySelector("#events-grid");
 
   if (!container) return;
