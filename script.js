@@ -243,6 +243,40 @@ async function loadEvents() {
           ${escapeHTML(item.status)}
         </span>
 
+${item.status === "Publié" ? `
+  <form class="event-registration-form" data-event-id="${item.id}">
+    <h4>Participer à cet événement</h4>
+
+    <label>
+      Nom et prénom
+      <input
+        type="text"
+        name="participant_name"
+        required
+        maxlength="100"
+        placeholder="Votre nom"
+      >
+    </label>
+
+    <label>
+      Adresse courriel
+      <input
+        type="email"
+        name="participant_email"
+        required
+        maxlength="254"
+        placeholder="Votre adresse courriel"
+      >
+    </label>
+
+    <button type="submit" class="button button-register">
+      S'inscrire →
+    </button>
+
+    <p class="registration-message" aria-live="polite"></p>
+  </form>
+` : ""}
+
       </div>
     </article>
   `).join("");
