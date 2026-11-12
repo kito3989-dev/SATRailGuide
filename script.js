@@ -283,6 +283,55 @@ ${item.status === "Publié" ? `
 }
 
 // ==========================================
+// INSCRIPTIONS AUX ÉVÉNEMENTS
+// ==========================================
+
+document.addEventListener("submit", async (event) => {
+  const form = event.target.closest(".event-registration-form");
+
+  if (!form) return;
+
+  event.preventDefault();
+
+  const button = form.querySelector('button[type="submit"]');
+  const message = form.querySelector(".registration-message");
+
+  const participantName = form.elements.participant_name.value.trim();
+  const participantEmail = form.elements.participant_email.value.trim().toLowerCase();
+  const eventId = Number(form.dataset.eventId);
+
+  button.disabled = true;
+  button.textContent = "Inscription en cours...";
+  message.textContent = "";
+
+  const { error } = await supabaseClient
+    .from("event_registrations")
+    .insert({
+      event_id: eventId,
+      participant_name: participantName,
+      participant_email: participantEmail
+    });
+
+  if (error) {
+    console.error("Erreur inscription :", error);
+
+    if (error.code === "23505") {
+      message.textContent = "Vous êtes déjà inscrit à cet événement.";
+    } else {
+      message.textContent = "Une erreur est survenue. Veuillez réessayer.";
+    }
+
+    button.disabled = false;
+    button.textContent = "S'inscrire →";
+    return;
+  }
+
+  message.textContent = "Votre inscription a bien été enregistrée !";
+  button.textContent = "Inscription confirmée";
+  form.reset();
+});
+
+// ==========================================
 // PROTECTION DU TEXTE AFFICHÉ
 // ==========================================
 
