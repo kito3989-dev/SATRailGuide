@@ -311,7 +311,6 @@
           <option>Expert</option>
         </select>
 
-        <input type="hidden" id="trailElevation">
         <label>URL de l'image</label>
         <input id="trailImage" type="url">
         <label>Détails du parcours</label>
@@ -925,7 +924,6 @@ function renderEvents() {
       distance_km: $("trailDistance").value ? Number($("trailDistance").value) : null,
       duration_minutes: $("trailDuration").value ? Number($("trailDuration").value) : null,
       difficulty: $("trailDifficulty").value,
-      elevation_m: $("trailElevation").value ? Number($("trailElevation").value) : null,
       image_url: $("trailImage").value.trim(),
       route_details: $("trailDetails").value.trim(),
       published: $("trailPublished").checked
@@ -956,7 +954,6 @@ function renderEvents() {
     $("trailDistance").value = trail.distance_km ?? "";
     $("trailDuration").value = trail.duration_minutes ?? "";
     $("trailDifficulty").value = trail.difficulty || "Facile";
-    $("trailElevation").value = trail.elevation_m ?? "";
     $("trailImage").value = trail.image_url || "";
     $("trailDetails").value = trail.route_details || "";
     $("trailPublished").checked = trail.published;
