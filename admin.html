@@ -1,1 +1,902 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration | SA Trail Guide</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f5f1;
+      color: #26352c;
+    }
+
+    header {
+      background: #183d2b;
+      color: white;
+      padding: 22px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header span {
+      color: #b8d5bd;
+      font-size: 13px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .panel {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 3px 15px #0000000d;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #214b34;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 15px;
+      border: 1px solid #d4ded5;
+      border-radius: 7px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 11px 17px;
+      background: #285b3d;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 4px;
+    }
+
+    button:hover {
+      background: #39764f;
+    }
+
+    button.secondary {
+      background: #64736a;
+    }
+
+    button.danger {
+      background: #a83d3d;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tabs button.active {
+      background: #dcebdd;
+      color: #214b34;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+    }
+
+    .stat {
+      background: #edf4ed;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 30px;
+      color: #285b3d;
+    }
+
+    .item {
+      border: 1px solid #e0e8e0;
+      padding: 15px;
+      border-radius: 9px;
+      margin: 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .item p {
+      margin: 6px 0;
+      color: #657269;
+      font-size: 14px;
+    }
+
+    .status {
+      font-size: 12px;
+      font-weight: bold;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #edf4ed;
+    }
+
+    .status.published {
+      color: #24633b;
+      background: #dff2e3;
+    }
+
+    .status.draft {
+      color: #805d20;
+      background: #fff0d2;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 15px;
+      background: #edf4ed;
+      color: #285b3d;
+    }
+
+    .message.error {
+      background: #fbe8e8;
+      color: #9b3030;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .checkbox-row input {
+      width: auto;
+      margin: 0;
+    }
+
+    footer {
+      text-align: center;
+      color: #7b887e;
+      padding: 30px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>SA Trail Guide</h1>
+    <span>Espace d'administration</span>
+  </div>
+  <button id="logoutBtn" class="secondary hidden">Déconnexion</button>
+</header>
+
+<main>
+
+  <div id="message" class="hidden"></div>
+
+  <!-- CONNEXION -->
+  <section id="loginPanel" class="panel">
+    <h2>Connexion administrateur</h2>
+
+    <form id="loginForm">
+      <label for="email">Adresse email</label>
+      <input id="email" type="email" required>
+
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" required>
+
+      <button type="submit">Se connecter</button>
+    </form>
+  </section>
+
+  <!-- ADMINISTRATION -->
+  <section id="dashboard" class="hidden">
+
+    <div class="panel">
+      <h2>Tableau de bord</h2>
+      <p>Bienvenue dans l'espace de gestion de SA Trail Guide.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <strong id="trailCount">0</strong>
+          Randonnées
+        </div>
+
+        <div class="stat">
+          <strong id="eventCount">0</strong>
+          Événements
+        </div>
+
+        <div class="stat">
+          <strong id="poiCount">0</strong>
+          Points d'intérêt
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="active" data-tab="trails">Randonnées</button>
+      <button data-tab="events">Événements</button>
+      <button data-tab="points">Points d'intérêt</button>
+    </div>
+
+    <!-- RANDONNÉES -->
+    <section id="trails" class="panel tab-content">
+      <h2>Gestion des randonnées</h2>
+
+      <form id="trailForm">
+        <input type="hidden" id="trailId">
+
+        <label>Nom de la randonnée</label>
+        <input id="trailName" required>
+
+        <label>Localisation</label>
+        <input id="trailLocation">
+
+        <label>Description</label>
+        <textarea id="trailDescription"></textarea>
+
+        <label>Distance (km)</label>
+        <input id="trailDistance" type="number" min="0" step="0.01">
+
+        <label>Durée (minutes)</label>
+        <input id="trailDuration" type="number" min="0">
+
+        <label>Difficulté</label>
+        <select id="trailDifficulty">
+          <option>Facile</option>
+          <option>Modérée</option>
+          <option>Difficile</option>
+          <option>Expert</option>
+        </select>
+
+        <label>Dénivelé (mètres)</label>
+        <input id="trailElevation" type="number">
+
+        <label>URL de l'image</label>
+        <input id="trailImage" type="url">
+
+        <label>Détails du parcours</label>
+        <textarea id="trailDetails"></textarea>
+
+        <div class="checkbox-row">
+          <input id="trailPublished" type="checkbox">
+          <label for="trailPublished">Publier cette randonnée</label>
+        </div>
+
+        <button type="submit">Enregistrer la randonnée</button>
+        <button type="button" class="secondary hidden" id="cancelTrailEdit">
+          Annuler la modification
+        </button>
+      </form>
+
+      <hr>
+      <h2>Randonnées enregistrées</h2>
+      <div id="trailList"></div>
+    </section>
+
+    <!-- ÉVÉNEMENTS -->
+    <section id="events" class="panel tab-content hidden">
+      <h2>Gestion des événements</h2>
+
+      <form id="eventForm">
+        <input type="hidden" id="eventId">
+
+        <label>Nom de l'événement</label>
+        <input id="eventTitle" required>
+
+        <label>Description</label>
+        <textarea id="eventDescription"></textarea>
+
+        <label>Localisation</label>
+        <input id="eventLocation">
+
+        <label>Date et heure</label>
+        <input id="eventDate" type="datetime-local">
+
+        <label>Durée (minutes)</label>
+        <input id="eventDuration" type="number" min="0">
+
+        <label>Difficulté</label>
+        <select id="eventDifficulty">
+          <option>Facile</option>
+          <option>Modérée</option>
+          <option>Difficile</option>
+          <option>Expert</option>
+        </select>
+
+        <label>URL de l'image</label>
+        <input id="eventImage" type="url">
+
+        <div class="checkbox-row">
+          <input id="eventPublished" type="checkbox">
+          <label for="eventPublished">Publier cet événement</label>
+        </div>
+
+        <button type="submit">Enregistrer l'événement</button>
+        <button type="button" class="secondary hidden" id="cancelEventEdit">
+          Annuler la modification
+        </button>
+      </form>
+
+      <hr>
+      <h2>Événements enregistrés</h2>
+      <div id="eventList"></div>
+    </section>
+
+    <!-- POINTS D'INTÉRÊT -->
+    <section id="points" class="panel tab-content hidden">
+      <h2>Gestion des points d'intérêt</h2>
+
+      <form id="poiForm">
+        <input type="hidden" id="poiId">
+
+        <label>Randonnée associée</label>
+        <select id="poiTrail" required></select>
+
+        <label>Nom du point d'intérêt</label>
+        <input id="poiName" required>
+
+        <label>Description</label>
+        <textarea id="poiDescription"></textarea>
+
+        <label>Localisation</label>
+        <input id="poiLocation">
+
+        <label>URL de l'image</label>
+        <input id="poiImage" type="url">
+
+        <button type="submit">Enregistrer le point d'intérêt</button>
+        <button type="button" class="secondary hidden" id="cancelPoiEdit">
+          Annuler la modification
+        </button>
+      </form>
+
+      <hr>
+      <h2>Points d'intérêt enregistrés</h2>
+      <div id="poiList"></div>
+    </section>
+
+  </section>
+
+</main>
+
+<footer>
+  SA Trail Guide — Administration
+</footer>
+
+<script>
+  // CONFIGURATION SUPABASE
+  const SUPABASE_URL = "https://wzslryhfcnzndloifktr.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_D45QMOrA08ZhofJDwxeOYw_Hk15lYxM";
+
+  const ADMIN_UID = "81207461-5002-49f0-950e-92565ea39efd";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  let trails = [];
+  let events = [];
+  let points = [];
+
+  const $ = id => document.getElementById(id);
+
+  function showMessage(message, error = false) {
+    const box = $("message");
+    box.textContent = message;
+    box.className = error ? "message error" : "message";
+    box.classList.remove("hidden");
+
+    setTimeout(() => box.classList.add("hidden"), 5000);
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function setLoggedIn(isLoggedIn) {
+    $("loginPanel").classList.toggle("hidden", isLoggedIn);
+    $("dashboard").classList.toggle("hidden", !isLoggedIn);
+    $("logoutBtn").classList.toggle("hidden", !isLoggedIn);
+  }
+
+  async function checkAdmin() {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      setLoggedIn(false);
+      return;
+    }
+
+    if (session.user.id !== ADMIN_UID) {
+      await db.auth.signOut();
+      setLoggedIn(false);
+      showMessage("Ce compte n'est pas autorisé à accéder à l'administration.", true);
+      return;
+    }
+
+    setLoggedIn(true);
+    await loadAll();
+  }
+
+  // CONNEXION
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email: $("email").value,
+      password: $("password").value
+    });
+
+    if (error) {
+      showMessage("Connexion impossible : " + error.message, true);
+      return;
+    }
+
+    if (data.user.id !== ADMIN_UID) {
+      await db.auth.signOut();
+      showMessage("Ce compte n'est pas autorisé.", true);
+      return;
+    }
+
+    setLoggedIn(true);
+    showMessage("Connexion réussie.");
+    await loadAll();
+  });
+
+  // DÉCONNEXION
+  $("logoutBtn").addEventListener("click", async () => {
+    await db.auth.signOut();
+    setLoggedIn(false);
+    showMessage("Vous êtes déconnecté.");
+  });
+
+  // ONGLETS
+  document.querySelectorAll("[data-tab]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll("[data-tab]").forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
+
+      document.querySelectorAll(".tab-content").forEach(section => {
+        section.classList.add("hidden");
+      });
+
+      $(button.dataset.tab).classList.remove("hidden");
+    });
+  });
+
+  // CHARGEMENT DES DONNÉES
+  async function loadAll() {
+    await Promise.all([
+      loadTrails(),
+      loadEvents(),
+      loadPoints()
+    ]);
+  }
+
+  async function loadTrails() {
+    const { data, error } = await db
+      .from("trails")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      showMessage("Erreur lors du chargement des randonnées : " + error.message, true);
+      return;
+    }
+
+    trails = data || [];
+    $("trailCount").textContent = trails.length;
+    renderTrails();
+    updateTrailSelect();
+  }
+
+  async function loadEvents() {
+    const { data, error } = await db
+      .from("events")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      showMessage("Erreur lors du chargement des événements : " + error.message, true);
+      return;
+    }
+
+    events = data || [];
+    $("eventCount").textContent = events.length;
+    renderEvents();
+  }
+
+  async function loadPoints() {
+    const { data, error } = await db
+      .from("points_of_interest")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      showMessage("Erreur lors du chargement des points d'intérêt : " + error.message, true);
+      return;
+    }
+
+    points = data || [];
+    $("poiCount").textContent = points.length;
+    renderPoints();
+  }
+
+  function statusBadge(published) {
+    return published
+      ? '<span class="status published">Publié</span>'
+      : '<span class="status draft">Brouillon</span>';
+  }
+
+  // AFFICHAGE DES RANDONNÉES
+  function renderTrails() {
+    $("trailList").innerHTML = trails.length
+      ? trails.map(trail => `
+        <div class="item">
+          <div>
+            <strong>${escapeHTML(trail.name)}</strong>
+            <p>${escapeHTML(trail.location)} — ${escapeHTML(trail.distance_km)} km</p>
+            ${statusBadge(trail.published)}
+          </div>
+          <div>
+            <button onclick="editTrail(${trail.id})">Modifier</button>
+            <button class="danger" onclick="deleteTrail(${trail.id})">Supprimer</button>
+          </div>
+        </div>
+      `).join("")
+      : "<p>Aucune randonnée enregistrée.</p>";
+  }
+
+  // AFFICHAGE DES ÉVÉNEMENTS
+  function renderEvents() {
+    $("eventList").innerHTML = events.length
+      ? events.map(item => `
+        <div class="item">
+          <div>
+            <strong>${escapeHTML(item.title)}</strong>
+            <p>${escapeHTML(item.location)}</p>
+            ${statusBadge(item.published)}
+          </div>
+          <div>
+            <button onclick="editEvent(${item.id})">Modifier</button>
+            <button class="danger" onclick="deleteEvent(${item.id})">Supprimer</button>
+          </div>
+        </div>
+      `).join("")
+      : "<p>Aucun événement enregistré.</p>";
+  }
+
+  // AFFICHAGE DES POINTS D'INTÉRÊT
+  function renderPoints() {
+    $("poiList").innerHTML = points.length
+      ? points.map(point => {
+        const trail = trails.find(t => t.id === point.trail_id);
+
+        return `
+          <div class="item">
+            <div>
+              <strong>${escapeHTML(point.name)}</strong>
+              <p>Randonnée : ${escapeHTML(trail?.name || "Inconnue")}</p>
+            </div>
+            <div>
+              <button onclick="editPoint(${point.id})">Modifier</button>
+              <button class="danger" onclick="deletePoint(${point.id})">Supprimer</button>
+            </div>
+          </div>
+        `;
+      }).join("")
+      : "<p>Aucun point d'intérêt enregistré.</p>";
+  }
+
+  function updateTrailSelect(selected = "") {
+    $("poiTrail").innerHTML =
+      '<option value="">Choisir une randonnée</option>' +
+      trails.map(trail => `
+        <option value="${trail.id}" ${String(trail.id) === String(selected) ? "selected" : ""}>
+          ${escapeHTML(trail.name)}
+        </option>
+      `).join("");
+  }
+
+  // AJOUT / MODIFICATION D'UNE RANDONNÉE
+  $("trailForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = $("trailId").value;
+
+    const record = {
+      name: $("trailName").value.trim(),
+      location: $("trailLocation").value.trim(),
+      description: $("trailDescription").value.trim(),
+      distance_km: $("trailDistance").value ? Number($("trailDistance").value) : null,
+      duration_minutes: $("trailDuration").value ? Number($("trailDuration").value) : null,
+      difficulty: $("trailDifficulty").value,
+      elevation_m: $("trailElevation").value ? Number($("trailElevation").value) : null,
+      image_url: $("trailImage").value.trim(),
+      route_details: $("trailDetails").value.trim(),
+      published: $("trailPublished").checked
+    };
+
+    const result = id
+      ? await db.from("trails").update(record).eq("id", id)
+      : await db.from("trails").insert(record);
+
+    if (result.error) {
+      showMessage(result.error.message, true);
+      return;
+    }
+
+    showMessage("Randonnée enregistrée.");
+    resetTrailForm();
+    await loadTrails();
+  });
+
+  function editTrail(id) {
+    const trail = trails.find(item => item.id === id);
+    if (!trail) return;
+
+    $("trailId").value = trail.id;
+    $("trailName").value = trail.name || "";
+    $("trailLocation").value = trail.location || "";
+    $("trailDescription").value = trail.description || "";
+    $("trailDistance").value = trail.distance_km ?? "";
+    $("trailDuration").value = trail.duration_minutes ?? "";
+    $("trailDifficulty").value = trail.difficulty || "Facile";
+    $("trailElevation").value = trail.elevation_m ?? "";
+    $("trailImage").value = trail.image_url || "";
+    $("trailDetails").value = trail.route_details || "";
+    $("trailPublished").checked = trail.published;
+
+    $("cancelTrailEdit").classList.remove("hidden");
+    $("trailForm").scrollIntoView({ behavior: "smooth" });
+  }
+
+  async function deleteTrail(id) {
+    if (!confirm("Supprimer cette randonnée et ses points d'intérêt associés ?")) return;
+
+    const { error } = await db.from("trails").delete().eq("id", id);
+
+    if (error) {
+      showMessage(error.message, true);
+      return;
+    }
+
+    showMessage("Randonnée supprimée.");
+    await loadAll();
+  }
+
+  function resetTrailForm() {
+    $("trailForm").reset();
+    $("trailId").value = "";
+    $("cancelTrailEdit").classList.add("hidden");
+  }
+
+  $("cancelTrailEdit").addEventListener("click", resetTrailForm);
+
+  // AJOUT / MODIFICATION D'UN ÉVÉNEMENT
+  $("eventForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = $("eventId").value;
+    const dateValue = $("eventDate").value;
+
+    const record = {
+      title: $("eventTitle").value.trim(),
+      description: $("eventDescription").value.trim(),
+      location: $("eventLocation").value.trim(),
+      event_date: dateValue ? new Date(dateValue).toISOString() : null,
+      duration_minutes: $("eventDuration").value ? Number($("eventDuration").value) : null,
+      difficulty: $("eventDifficulty").value,
+      image_url: $("eventImage").value.trim(),
+      published: $("eventPublished").checked
+    };
+
+    const result = id
+      ? await db.from("events").update(record).eq("id", id)
+      : await db.from("events").insert(record);
+
+    if (result.error) {
+      showMessage(result.error.message, true);
+      return;
+    }
+
+    showMessage("Événement enregistré.");
+    resetEventForm();
+    await loadEvents();
+  });
+
+  function editEvent(id) {
+    const item = events.find(event => event.id === id);
+    if (!item) return;
+
+    $("eventId").value = item.id;
+    $("eventTitle").value = item.title || "";
+    $("eventDescription").value = item.description || "";
+    $("eventLocation").value = item.location || "";
+
+    if (item.event_date) {
+      const date = new Date(item.event_date);
+      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      $("eventDate").value = localDate.toISOString().slice(0, 16);
+    } else {
+      $("eventDate").value = "";
+    }
+
+    $("eventDuration").value = item.duration_minutes ?? "";
+    $("eventDifficulty").value = item.difficulty || "Facile";
+    $("eventImage").value = item.image_url || "";
+    $("eventPublished").checked = item.published;
+
+    $("cancelEventEdit").classList.remove("hidden");
+    $("eventForm").scrollIntoView({ behavior: "smooth" });
+  }
+
+  async function deleteEvent(id) {
+    if (!confirm("Supprimer cet événement ?")) return;
+
+    const { error } = await db.from("events").delete().eq("id", id);
+
+    if (error) {
+      showMessage(error.message, true);
+      return;
+    }
+
+    showMessage("Événement supprimé.");
+    await loadEvents();
+  }
+
+  function resetEventForm() {
+    $("eventForm").reset();
+    $("eventId").value = "";
+    $("cancelEventEdit").classList.add("hidden");
+  }
+
+  $("cancelEventEdit").addEventListener("click", resetEventForm);
+
+  // AJOUT / MODIFICATION D'UN POINT D'INTÉRÊT
+  $("poiForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = $("poiId").value;
+
+    const record = {
+      trail_id: Number($("poiTrail").value),
+      name: $("poiName").value.trim(),
+      description: $("poiDescription").value.trim(),
+      location: $("poiLocation").value.trim(),
+      image_url: $("poiImage").value.trim()
+    };
+
+    if (!record.trail_id) {
+      showMessage("Choisis une randonnée.", true);
+      return;
+    }
+
+    const result = id
+      ? await db.from("points_of_interest").update(record).eq("id", id)
+      : await db.from("points_of_interest").insert(record);
+
+    if (result.error) {
+      showMessage(result.error.message, true);
+      return;
+    }
+
+    showMessage("Point d'intérêt enregistré.");
+    resetPointForm();
+    await loadPoints();
+  });
+
+  function editPoint(id) {
+    const point = points.find(item => item.id === id);
+    if (!point) return;
+
+    $("poiId").value = point.id;
+    updateTrailSelect(point.trail_id);
+    $("poiName").value = point.name || "";
+    $("poiDescription").value = point.description || "";
+    $("poiLocation").value = point.location || "";
+    $("poiImage").value = point.image_url || "";
+
+    $("cancelPoiEdit").classList.remove("hidden");
+    $("poiForm").scrollIntoView({ behavior: "smooth" });
+  }
+
+  async function deletePoint(id) {
+    if (!confirm("Supprimer ce point d'intérêt ?")) return;
+
+    const { error } = await db.from("points_of_interest").delete().eq("id", id);
+
+    if (error) {
+      showMessage(error.message, true);
+      return;
+    }
+
+    showMessage("Point d'intérêt supprimé.");
+    await loadPoints();
+  }
+
+  function resetPointForm() {
+    $("poiForm").reset();
+    $("poiId").value = "";
+    $("cancelPoiEdit").classList.add("hidden");
+    updateTrailSelect();
+  }
+
+  $("cancelPoiEdit").addEventListener("click", resetPointForm);
+
+  // VÉRIFICATION DE LA SESSION AU DÉMARRAGE
+  checkAdmin();
+</script>
+
+</body>
+</html>
