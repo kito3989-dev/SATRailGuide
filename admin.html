@@ -612,6 +612,87 @@
 
   renderEvents();
 }
+  async function viewRegistrations(eventId) {
+  const event = events.find(item => item.id === eventId);
+
+  if (!event) return;
+
+  const { data, error } = await db
+    .from("event_registrations")
+    .select("id, participant_name, participant_phone, created_at")
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    showMessage("Erreur lors du chargement des participants : " + error.message, true);
+    return;
+  }
+
+  const oldModal = document.getElementById("registrationsModal");
+  if (oldModal) oldModal.remove();
+
+  const modal = document.createElement("div");
+  modal.id = "registrationsModal";
+
+  modal.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+  `;
+
+  modal.innerHTML = `
+    <div style="
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 550px;
+      max-height: 80vh;
+      overflow-y: auto;
+    ">
+      <h2>Participants</h2>
+
+      <h3>${escapeHTML(event.title)}</h3>
+
+      <p><strong>${data.length}</strong> participant(s) inscrit(s)</p>
+
+      <div>
+        ${data.length
+          ? data.map(person => `
+            <div style="
+              padding: 14px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              margin-bottom: 10px;
+            ">
+              <strong>${escapeHTML(person.participant_name)}</strong>
+              <p>Téléphone : ${escapeHTML(person.participant_phone || "Non renseigné")}</p>
+              <p>Inscription : ${new Date(person.created_at).toLocaleString("fr-CA")}</p>
+            </div>
+          `).join("")
+          : "<p>Aucun participant inscrit pour le moment.</p>"
+        }
+      </div>
+
+      <button id="closeRegistrations">Fermer</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  document.getElementById("closeRegistrations").onclick = () => {
+    modal.remove();
+  };
+
+  modal.addEventListener("click", event => {
+    if (event.target === modal) modal.remove();
+  });
+}
 
   async function loadPoints() {
     const { data, error } = await db
