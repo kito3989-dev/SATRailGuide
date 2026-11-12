@@ -462,6 +462,8 @@ document.getElementById("member-login-form")
       return;
     }
 
-    message.textContent =
-      `Bienvenue ${data.user.user_metadata.first_name} !`;
+ message.textContent = "";
+document.getElementById("member-dashboard").style.display = "block";
+document.getElementById("member-display-name").textContent =
+  `${data.user.user_metadata.first_name} ${data.user.user_metadata.last_name}`;
   });
