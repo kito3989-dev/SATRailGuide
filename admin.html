@@ -655,23 +655,41 @@
   }
 
   // AFFICHAGE DES ÉVÉNEMENTS
- function renderEvents() {
+function renderEvents() {
   $("eventList").innerHTML = events.length
     ? events.map(item => `
       <div class="item">
         <div>
           <strong>${escapeHTML(item.title)}</strong>
+
           <p>Catégorie : ${escapeHTML(item.category || "Non définie")}</p>
           <p>Lieu : ${escapeHTML(item.location || "Non défini")}</p>
+
           <p>Date : ${item.event_date
             ? new Date(item.event_date).toLocaleString("fr-CA")
             : "Non définie"}</p>
+
           <p>Durée : ${item.duration_minutes
             ? item.duration_minutes + " minutes"
             : "Non définie"}</p>
+
+          <p>
+            <strong>Participants inscrits :</strong>
+            ${item.registrationCount || 0}
+            ${item.max_participants
+              ? "/ " + item.max_participants
+              : ""}
+          </p>
+
           <span class="status ${
             item.status === "Publié" ? "published" : "draft"
           }">${escapeHTML(item.status || "Brouillon")}</span>
+
+          <br>
+
+          <button onclick="viewRegistrations(${item.id})">
+            Voir les participants
+          </button>
         </div>
 
         <div>
