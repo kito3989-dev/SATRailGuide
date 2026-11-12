@@ -575,21 +575,43 @@
     updateTrailSelect();
   }
 
-  async function loadEvents() {
-    const { data, error } = await db
-      .from("events")
-      .select("*")
-      .order("created_at", { ascending: false });
+   async function loadEvents() {
+  const { data, error } = await db
+    .from("events")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (error) {
-      showMessage("Erreur lors du chargement des événements : " + error.message, true);
-      return;
-    }
-
-    events = data || [];
-    $("eventCount").textContent = events.length;
-    renderEvents();
+  if (error) {
+    showMessage("Erreur lors du chargement des événements : " + error.message, true);
+    return;
   }
+
+  events = data || [];
+
+  const { data: registrations, error: registrationError } = await db
+    .from("event_registrations")
+    .select("event_id");
+
+  if (registrationError) {
+    showMessage("Erreur lors du chargement des inscriptions : " + registrationError.message, true);
+    return;
+  }
+
+  const counts = {};
+
+  (registrations || []).forEach(registration => {
+    counts[registration.event_id] = (counts[registration.event_id] || 0) + 1;
+  });
+
+  events = events.map(item => ({
+    ...item,
+    registrationCount: counts[item.id] || 0
+  }));
+
+  $("eventCount").textContent = events.length;
+
+  renderEvents();
+}
 
   async function loadPoints() {
     const { data, error } = await db
