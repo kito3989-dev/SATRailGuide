@@ -195,10 +195,11 @@ async function loadEvents() {
             })}
           </strong>
           <span>
-            ${new Date(item.event_date).toLocaleTimeString("fr-CA", {
-              hour: "2-digit",
-              minute: "2-digit"
-            })}
+          ${new Date(item.event_date).toLocaleTimeString("fr-CA", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false
+}).replace(" h ", " ")}
           </span>
         </div>
       `
