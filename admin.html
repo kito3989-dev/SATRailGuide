@@ -337,53 +337,69 @@
     </section>
 
     <!-- ÉVÉNEMENTS -->
-    <section id="events" class="panel tab-content hidden">
-      <h2>Gestion des événements</h2>
+    <!-- ÉVÉNEMENTS -->
+<section id="events" class="panel tab-content hidden">
+  <h2>Gestion des événements</h2>
 
-      <form id="eventForm">
-        <input type="hidden" id="eventId">
+  <form id="eventForm">
+    <input type="hidden" id="eventId">
 
-        <label>Nom de l'événement</label>
-        <input id="eventTitle" required>
+    <label>Nom de l'événement</label>
+    <input id="eventTitle" required>
 
-        <label>Description</label>
-        <textarea id="eventDescription"></textarea>
+    <label>Catégorie</label>
+    <select id="eventCategory" required>
+      <option value="">Choisir une catégorie</option>
+      <option>Événement spécial</option>
+      <option>Randonnée</option>
+      <option>Cours en nature</option>
+      <option>Formation</option>
+      <option>Activité sociale</option>
+      <option>Compétition</option>
+      <option>Réunion</option>
+      <option>Autre</option>
+    </select>
 
-        <label>Localisation</label>
-        <input id="eventLocation">
+    <label>Description</label>
+    <textarea id="eventDescription"></textarea>
 
-        <label>Date et heure</label>
-        <input id="eventDate" type="datetime-local">
+    <label>Date et heure</label>
+    <input id="eventDate" type="datetime-local" required>
 
-        <label>Durée (minutes)</label>
-        <input id="eventDuration" type="number" min="0">
+    <label>Lieu de rendez-vous</label>
+    <input id="eventLocation">
 
-        <label>Difficulté</label>
-        <select id="eventDifficulty">
-          <option>Facile</option>
-          <option>Modérée</option>
-          <option>Difficile</option>
-          <option>Expert</option>
-        </select>
+    <label>Durée estimée</label>
+    <input id="eventDuration" type="number" min="0" placeholder="Durée en minutes">
 
-        <label>URL de l'image</label>
-        <input id="eventImage" type="url">
+    <label>Nombre maximum de participants</label>
+    <input id="eventMaxParticipants" type="number" min="1">
 
-        <div class="checkbox-row">
-          <input id="eventPublished" type="checkbox">
-          <label for="eventPublished">Publier cet événement</label>
-        </div>
+    <label>Conditions de participation</label>
+    <textarea id="eventConditions"></textarea>
 
-        <button type="submit">Enregistrer l'événement</button>
-        <button type="button" class="secondary hidden" id="cancelEventEdit">
-          Annuler la modification
-        </button>
-      </form>
+    <label>Image d'illustration (URL)</label>
+    <input id="eventImage" type="url">
 
-      <hr>
-      <h2>Événements enregistrés</h2>
-      <div id="eventList"></div>
-    </section>
+    <label>Statut</label>
+    <select id="eventStatus">
+      <option>Brouillon</option>
+      <option>Publié</option>
+      <option>Complet</option>
+      <option>Annulé</option>
+    </select>
+
+    <button type="submit">Enregistrer l'événement</button>
+
+    <button type="button" class="secondary hidden" id="cancelEventEdit">
+      Annuler la modification
+    </button>
+  </form>
+
+  <hr>
+  <h2>Événements enregistrés</h2>
+  <div id="eventList"></div>
+</section>
 
     <!-- POINTS D'INTÉRÊT -->
     <section id="points" class="panel tab-content hidden">
