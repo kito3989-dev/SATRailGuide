@@ -502,3 +502,42 @@ async function restoreMemberSession() {
 }
 
 restoreMemberSession();
+
+// AFFICHER LES INSCRIPTIONS DU MEMBRE
+async function loadMemberRegistrations() {
+  const container = document.getElementById("member-registrations");
+
+  const { data: userData } = await supabaseClient.auth.getUser();
+
+  if (!userData.user) return;
+
+  const fullName =
+    `${userData.user.user_metadata.first_name} ${userData.user.user_metadata.last_name}`;
+
+  const { data, error } = await supabaseClient
+    .from("event_registrations")
+    .select("id, event_id, created_at, events(title, event_date)")
+    .eq("participant_name", fullName);
+
+  if (error) {
+    console.error("Erreur inscriptions membre :", error);
+    container.textContent = "Impossible de charger vos inscriptions.";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.textContent = "Vous n'êtes inscrit à aucun événement.";
+    return;
+  }
+
+  container.innerHTML = data.map(item => `
+    <div class="item">
+      <strong>${escapeHTML(item.events?.title || "Événement")}</strong>
+      <p>
+        ${item.events?.event_date
+          ? new Date(item.events.event_date).toLocaleDateString("fr-CA")
+          : "Date à déterminer"}
+      </p>
+    </div>
+  `).join("");
+}
