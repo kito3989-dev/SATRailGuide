@@ -673,6 +673,9 @@
               <strong>${escapeHTML(person.participant_name)}</strong>
               <p>Téléphone : ${escapeHTML(person.participant_phone || "Non renseigné")}</p>
               <p>Inscription : ${new Date(person.created_at).toLocaleString("fr-CA")}</p>
+              <button class="danger" onclick="deleteRegistration(${person.id}, ${eventId})">
+  Supprimer l'inscription
+</button>
             </div>
           `).join("")
           : "<p>Aucun participant inscrit pour le moment.</p>"
@@ -692,6 +695,27 @@
   modal.addEventListener("click", event => {
     if (event.target === modal) modal.remove();
   });
+}
+
+  async function deleteRegistration(registrationId, eventId) {
+  if (!confirm("Voulez-vous vraiment supprimer cette inscription ?")) {
+    return;
+  }
+
+  const { error } = await db
+    .from("event_registrations")
+    .delete()
+    .eq("id", registrationId);
+
+  if (error) {
+    showMessage("Erreur lors de la suppression : " + error.message, true);
+    return;
+  }
+
+  showMessage("Inscription supprimée.");
+
+  await loadEvents();
+  await viewRegistrations(eventId);
 }
 
   async function loadPoints() {
