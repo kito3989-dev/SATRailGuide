@@ -963,6 +963,14 @@ function renderEvents() {
     $("trailForm").scrollIntoView({ behavior: "smooth" });
   }
 
+  function resetTrailForm() {
+  $("trailForm").reset();
+  $("trailId").value = "";
+  $("cancelTrailEdit").classList.add("hidden");
+}
+
+$("cancelTrailEdit").addEventListener("click", resetTrailForm);
+
   function duplicateTrail(id) {
   const trail = trails.find(item => item.id === id);
   if (!trail) return;
