@@ -742,22 +742,32 @@
 
   // AFFICHAGE DES RANDONNÉES
   function renderTrails() {
-    $("trailList").innerHTML = trails.length
-      ? trails.map(trail => `
-        <div class="item">
-          <div>
-            <strong>${escapeHTML(trail.name)}</strong>
-            <p>${escapeHTML(trail.location)} — ${escapeHTML(trail.distance_km)} km</p>
-            ${statusBadge(trail.published)}
-          </div>
-          <div>
-            <button onclick="editTrail(${trail.id})">Modifier</button>
-            <button class="danger" onclick="deleteTrail(${trail.id})">Supprimer</button>
-          </div>
+  $("trailList").innerHTML = trails.length
+    ? trails.map(trail => `
+      <div class="item">
+        <div>
+          <strong>${escapeHTML(trail.name)}</strong>
+
+          <p>
+            ${escapeHTML(trail.location || "Lieu non défini")}
+            — ${escapeHTML(trail.distance_km)} km
+          </p>
+
+          <p>Difficulté : ${escapeHTML(trail.difficulty || "Non définie")}</p>
+
+          <p>Durée : ${trail.duration_minutes || "Non définie"} minutes</p>
+
+          ${statusBadge(trail.published)}
         </div>
-      `).join("")
-      : "<p>Aucune randonnée enregistrée.</p>";
-  }
+
+        <div>
+          <button onclick="editTrail(${trail.id})">Modifier</button>
+          <button class="danger" onclick="deleteTrail(${trail.id})">Supprimer</button>
+        </div>
+      </div>
+    `).join("")
+    : "<p>Aucune randonnée enregistrée.</p>";
+}
 
   // AFFICHAGE DES ÉVÉNEMENTS
 function renderEvents() {
