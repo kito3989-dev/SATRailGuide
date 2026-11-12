@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SATRailGuide — Explorez les sentiers, préparez vos randonnées et découvrez de nouveaux paysages.">
+  <title>SATRailGuide — Explorez. Respirez. Découvrez.</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#accueil" aria-label="SATRailGuide, accueil">
+      <img src="assets/logo.svg" alt="" width="42" height="42">
+      <span>SA<span class="brand-accent">Trail</span>Guide</span>
+    </a>
+    <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <a href="#accueil">Accueil</a>
+      <a href="#randonnees">Randonnées</a>
+      <a href="#conseils">Conseils & sécurité</a>
+      <a href="#evenements">Événements</a>
+      <a href="#apropos">À propos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow">LE GOÛT DE L'EXPLORATION</p>
+        <h1>Explorez.<br>Respirez.<br><span>Découvrez.</span></h1>
+        <p class="hero-copy">Trouvez votre prochain sentier, préparez votre aventure et prenez le temps de découvrir ce qui vous entoure.</p>
+        <a class="button button-light" href="#randonnees">Découvrir les randonnées <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hero-caption">La nature vous attend.</div>
+    </section>
+
+    <section class="intro section-wrap">
+      <div>
+        <p class="eyebrow eyebrow-green">VOTRE PROCHAINE AVENTURE COMMENCE ICI</p>
+        <h2>Un sentier. Une découverte.<br>Une nouvelle expérience.</h2>
+      </div>
+      <p class="intro-text">Que vous recherchiez une promenade tranquille ou un parcours plus exigeant, SATRailGuide vous accompagne dans la découverte des espaces naturels et la préparation de vos sorties.</p>
+    </section>
+
+    <section class="trails-section section-wrap" id="randonnees">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow eyebrow-green">TROUVEZ VOTRE PARCOURS</p>
+          <h2>Randonnées à découvrir</h2>
+        </div>
+        <a class="text-link" href="#randonnees">Explorer les sentiers <span>→</span></a>
+      </div>
+      <div class="trail-tools">
+        <label class="search-box"><span class="sr-only">Rechercher une randonnée</span><span aria-hidden="true">⌕</span><input id="trail-search" type="search" placeholder="Rechercher un sentier..."></label>
+        <label class="select-wrap"><span class="sr-only">Filtrer par difficulté</span>
+          <select id="difficulty-filter">
+            <option value="">Toutes les difficultés</option>
+            <option value="Facile">Facile</option>
+            <option value="Intermédiaire">Intermédiaire</option>
+            <option value="Difficile">Difficile</option>
+          </select>
+        </label>
+      </div>
+      <div class="trail-grid" id="trail-grid">
+        <article class="trail-card">
+          <div class="trail-image trail-image-one"><span class="difficulty easy">Facile</span></div>
+          <div class="trail-info"><p class="trail-location">SECTEUR NORD</p><h3>Le sentier des Pins</h3><p>Une promenade paisible au cœur d'un environnement boisé.</p><div class="trail-meta"><span>↔ 3,2 km</span><span>◷ 1 h 15</span></div></div>
+        </article>
+        <article class="trail-card">
+          <div class="trail-image trail-image-two"><span class="difficulty medium">Intermédiaire</span></div>
+          <div class="trail-info"><p class="trail-location">RÉGION DES HAUTEURS</p><h3>Le belvédère des Crêtes</h3><p>Un parcours vallonné qui mène à un point de vue remarquable.</p><div class="trail-meta"><span>↔ 7,5 km</span><span>◷ 2 h 40</span></div></div>
+        </article>
+        <article class="trail-card">
+          <div class="trail-image trail-image-three"><span class="difficulty hard">Difficile</span></div>
+          <div class="trail-info"><p class="trail-location">SECTEUR SAUVAGE</p><h3>La traversée du Canyon</h3><p>Un itinéraire exigeant pour les marcheurs expérimentés.</p><div class="trail-meta"><span>↔ 12 km</span><span>◷ 4 h 30</span></div></div>
+        </article>
+      </div>
+      <p class="demo-note">Présentation provisoire : ces parcours sont des exemples de démonstration. Les fiches réelles seront ajoutées dans l'espace d'administration.</p>
+    </section>
+
+    <section class="safety-band" id="conseils">
+      <div class="safety-content">
+        <p class="eyebrow">PARTIR BIEN PRÉPARÉ</p>
+        <h2>La meilleure aventure<br>est une aventure préparée.</h2>
+        <p>Quelques bons réflexes permettent de profiter pleinement de chaque sortie. Consultez nos conseils avant de prendre le départ.</p>
+        <a class="button button-light" href="#conseils-pratiques">Voir les conseils <span>→</span></a>
+      </div>
+    </section>
+
+    <section class="tips-section section-wrap" id="conseils-pratiques">
+      <div class="section-heading"><div><p class="eyebrow eyebrow-green">AVANT DE PRENDRE LE DÉPART</p><h2>Conseils & sécurité</h2></div></div>
+      <div class="tips-grid">
+        <article class="tip-card"><span class="tip-icon">⌁</span><h3>Préparez votre itinéraire</h3><p>Vérifiez la distance, la durée estimée, le niveau de difficulté et les conditions du parcours.</p></article>
+        <article class="tip-card"><span class="tip-icon">☼</span><h3>Consultez la météo</h3><p>Adaptez votre équipement aux prévisions et reportez votre sortie si les conditions deviennent défavorables.</p></article>
+        <article class="tip-card"><span class="tip-icon">＋</span><h3>Emportez l'essentiel</h3><p>Prévoyez de l'eau, de la nourriture, des vêtements adaptés et une trousse de premiers secours.</p></article>
+      </div>
+    </section>
+
+    <section class="events-section section-wrap" id="evenements">
+      <div class="section-heading"><div><p class="eyebrow eyebrow-green">RENCONTRONS-NOUS DEHORS</p><h2>Prochains événements</h2></div><span class="coming-label">À VENIR</span></div>
+      <div class="event-placeholder"><div class="event-date"><span>BIENTÔT</span><strong>+</strong></div><div><h3>De nouvelles sorties se préparent</h3><p>Les prochaines randonnées collectives et activités guidées seront annoncées ici.</p></div></div>
+    </section>
+
+    <section class="about-section" id="apropos">
+      <div class="about-inner section-wrap">
+        <div><p class="eyebrow">À PROPOS DE SATRAILGUIDE</p><h2>Redécouvrir le plaisir<br>de prendre le chemin.</h2></div>
+        <div><p>SATrailGuide a pour vocation de faciliter la découverte des sentiers, de partager des informations utiles et d'encourager une pratique responsable des activités de plein air.</p><a class="text-link text-link-light" href="mailto:contact@satrailguide.com">Nous contacter <span>→</span></a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#accueil"><img src="assets/logo.svg" alt="" width="36" height="36"><span>SA<span class="brand-accent">Trail</span>Guide</span></a>
+    <p>Explorez avec curiosité. Marchez avec respect.</p>
+    <div class="footer-bottom"><span>© <span id="year"></span> SATRailGuide. Tous droits réservés.</span><a href="mailto:contact@satrailguide.com">Contact</a></div>
+  </footer>
+</body>
+</html>
