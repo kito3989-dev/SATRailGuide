@@ -161,6 +161,17 @@ async function loadEvents() {
     registrationCounts[registration.event_id] =
       (registrationCounts[registration.event_id] || 0) + 1;
   });
+
+  data.forEach(item => {
+    item.registrationCount = registrationCounts[item.id] || 0;
+
+    if (
+      item.max_participants &&
+      item.registrationCount >= item.max_participants
+    ) {
+      item.status = "Complet";
+    }
+  });
   
   const container = document.querySelector("#events-grid");
 
@@ -236,10 +247,13 @@ async function loadEvents() {
             : "À déterminer"}
         </p>
 
-        <p>
-          <strong>Participants maximum :</strong>
-          ${item.max_participants || "Non limité"}
-        </p>
+      <p>
+  <strong>Participants :</strong>
+  ${item.registrationCount || 0}
+  ${item.max_participants
+    ? "/ " + item.max_participants
+    : "(Sans limite)"}
+</p>
 
         ${item.participation_conditions ? `
           <p>
@@ -346,6 +360,8 @@ document.addEventListener("submit", async (event) => {
   message.textContent = "Votre inscription a bien été enregistrée !";
   button.textContent = "Inscription confirmée";
   form.reset();
+
+  await loadEvents();
 });
 
 // ==========================================
