@@ -532,14 +532,22 @@ async function loadMemberRegistrations() {
     return;
   }
 
-  container.innerHTML = data.map(item => `
-    <div class="item">
-      <strong>${escapeHTML(item.events?.title || "Événement")}</strong>
-      <p>
-        ${item.events?.event_date
-          ? new Date(item.events.event_date).toLocaleDateString("fr-CA")
-          : "Date à déterminer"}
-      </p>
-    </div>
-  `).join("");
+ container.innerHTML = data.map(item => `
+  <div class="item">
+    <strong>${escapeHTML(item.events?.title || "Événement")}</strong>
+
+    <p>
+      ${item.events?.event_date
+        ? new Date(item.events.event_date).toLocaleDateString("fr-CA")
+        : "Date à déterminer"}
+    </p>
+
+    <button
+      type="button"
+      class="button cancel-registration"
+      data-registration-id="${item.id}">
+      Annuler mon inscription
+    </button>
+  </div>
+`).join("");
 }
