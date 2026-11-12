@@ -258,16 +258,16 @@ ${item.status === "Publié" ? `
       >
     </label>
 
-    <label>
-      Adresse courriel
-      <input
-        type="email"
-        name="participant_email"
-        required
-        maxlength="254"
-        placeholder="Votre adresse courriel"
-      >
-    </label>
+   <label>
+  Numéro de téléphone
+  <input
+    type="tel"
+    name="participant_phone"
+    required
+    maxlength="20"
+    placeholder="Votre numéro de téléphone"
+  >
+</label>
 
     <button type="submit" class="button button-register">
       S'inscrire →
@@ -297,7 +297,7 @@ document.addEventListener("submit", async (event) => {
   const message = form.querySelector(".registration-message");
 
   const participantName = form.elements.participant_name.value.trim();
-  const participantEmail = form.elements.participant_email.value.trim().toLowerCase();
+ const participantPhone = form.elements.participant_phone.value.trim();
   const eventId = Number(form.dataset.eventId);
 
   button.disabled = true;
@@ -306,11 +306,11 @@ document.addEventListener("submit", async (event) => {
 
   const { error } = await supabaseClient
     .from("event_registrations")
-    .insert({
-      event_id: eventId,
-      participant_name: participantName,
-      participant_email: participantEmail
-    });
+   .insert({
+  event_id: eventId,
+  participant_name: participantName,
+  participant_phone: participantPhone
+});
 
   if (error) {
     console.error("Erreur inscription :", error);
