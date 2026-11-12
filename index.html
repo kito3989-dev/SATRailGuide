@@ -68,8 +68,26 @@
       <input type="password" name="password" minlength="8" required>
 
       <button type="submit">Créer mon compte</button>
-      <p id="member-signup-message"></p>
+     <p id="member-signup-message"></p>
     </form>
+
+    <div id="member-dashboard" style="display: none;">
+      <hr>
+
+      <h3>Mon espace membre</h3>
+
+      <p>Bienvenue, <strong id="member-display-name"></strong> !</p>
+
+      <h4>Mes inscriptions</h4>
+      <div id="member-registrations">
+        <p>Chargement de vos inscriptions...</p>
+      </div>
+
+      <button type="button" id="member-logout">
+        Se déconnecter
+      </button>
+    </div>
+
   </div>
 </section>
 
