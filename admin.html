@@ -762,10 +762,11 @@ function renderEvents() {
               : ""}
           </p>
 
-          <span class="status ${
-            item.status === "Publié" ? "published" : "draft"
-          }">${escapeHTML(item.status || "Brouillon")}</span>
+        <span class="status ${
+  item.status === "Publié" ? "published" : "draft"
 }" style="display: inline-block; margin-top: 12px;">
+  ${escapeHTML(item.status || "Brouillon")}
+</span>
 
          <div style="margin-top: 30px;">
   <button onclick="viewRegistrations(${item.id})">
