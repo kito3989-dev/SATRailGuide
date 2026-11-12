@@ -485,3 +485,20 @@ document.getElementById("member-logout")
     document.getElementById("member-login-message").textContent =
       "Vous êtes déconnecté.";
   });
+
+// RESTAURATION DE LA SESSION MEMBRE
+async function restoreMemberSession() {
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error || !data.user) return;
+
+  const firstName = data.user.user_metadata.first_name || "";
+  const lastName = data.user.user_metadata.last_name || "";
+
+  document.getElementById("member-dashboard").style.display = "block";
+
+  document.getElementById("member-display-name").textContent =
+    `${firstName} ${lastName}`;
+}
+
+restoreMemberSession();
