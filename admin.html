@@ -965,6 +965,25 @@ function renderEvents() {
     $("trailForm").scrollIntoView({ behavior: "smooth" });
   }
 
+  function duplicateTrail(id) {
+  const trail = trails.find(item => item.id === id);
+  if (!trail) return;
+
+  resetTrailForm();
+
+  $("trailName").value = trail.name + " (Copie)";
+  $("trailLocation").value = trail.location || "";
+  $("trailDescription").value = trail.description || "";
+  $("trailDistance").value = trail.distance_km ?? "";
+  $("trailDuration").value = trail.duration_minutes ?? "";
+  $("trailDifficulty").value = trail.difficulty || "Facile";
+  $("trailImage").value = trail.image_url || "";
+  $("trailDetails").value = trail.route_details || "";
+  $("trailPublished").checked = false;
+
+  $("trailForm").scrollIntoView({ behavior: "smooth" });
+}
+
   async function deleteTrail(id) {
     if (!confirm("Supprimer cette randonnée et ses points d'intérêt associés ?")) return;
 
