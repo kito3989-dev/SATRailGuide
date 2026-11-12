@@ -326,6 +326,9 @@
         </div>
 
         <button type="submit">Enregistrer la randonnée</button>
+        <button type="button" class="secondary" onclick="previewTrail()">
+  Prévisualiser
+</button>
         <button type="button" class="secondary hidden" id="cancelTrailEdit">
           Annuler la modification
         </button>
@@ -740,6 +743,68 @@
       : '<span class="status draft">Brouillon</span>';
   }
 
+function previewTrail() {
+  const name = $("trailName").value.trim();
+
+  if (!name) {
+    alert("Veuillez entrer le nom de la randonnée.");
+    return;
+  }
+
+  const distance = $("trailDistance").value;
+  const duration = $("trailDuration").value;
+  const difficulty = $("trailDifficulty").value;
+  const location = $("trailLocation").value;
+  const description = $("trailDescription").value;
+  const image = $("trailImage").value;
+
+  const oldPreview = document.getElementById("trailPreview");
+  if (oldPreview) oldPreview.remove();
+
+  const preview = document.createElement("div");
+  preview.id = "trailPreview";
+
+  preview.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+  `;
+
+  preview.innerHTML = `
+    <div style="
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 550px;
+      max-height: 85vh;
+      overflow-y: auto;
+    ">
+      ${image ? `<img src="${escapeHTML(image)}" style="width:100%; border-radius:10px; margin-bottom:15px;">` : ""}
+      <h2>${escapeHTML(name)}</h2>
+      <p>${escapeHTML(location || "Localisation non définie")}</p>
+      <p><strong>Distance :</strong> ${escapeHTML(distance || "Non définie")} km</p>
+      <p><strong>Durée :</strong> ${escapeHTML(duration || "Non définie")} minutes</p>
+      <p><strong>Difficulté :</strong> ${escapeHTML(difficulty)}</p>
+      <p>${escapeHTML(description || "Aucune description.")}</p>
+      <button id="closeTrailPreview">Fermer la prévisualisation</button>
+    </div>
+  `;
+
+  document.body.appendChild(preview);
+
+  document.getElementById("closeTrailPreview").onclick = () => preview.remove();
+
+  preview.addEventListener("click", event => {
+    if (event.target === preview) preview.remove();
+  });
+}
+  
   // AFFICHAGE DES RANDONNÉES
   function renderTrails() {
   $("trailList").innerHTML = trails.length
