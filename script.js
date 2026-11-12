@@ -551,3 +551,38 @@ async function loadMemberRegistrations() {
   </div>
 `).join("");
 }
+
+// ANNULATION D'UNE INSCRIPTION
+document.addEventListener("click", async event => {
+  const button = event.target.closest(".cancel-registration");
+
+  if (!button) return;
+
+  const registrationId = Number(button.dataset.registrationId);
+
+  if (!confirm("Voulez-vous vraiment annuler cette inscription ?")) {
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Annulation...";
+
+  const { data, error } = await supabaseClient.rpc(
+    "cancel_member_registration",
+    {
+      p_registration_id: registrationId
+    }
+  );
+
+  if (error || !data?.success) {
+    alert(data?.message || "Impossible d'annuler l'inscription.");
+    button.disabled = false;
+    button.textContent = "Annuler mon inscription";
+    return;
+  }
+
+  alert("Votre inscription a été annulée.");
+
+  await loadMemberRegistrations();
+  await loadEvents();
+});
