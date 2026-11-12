@@ -391,3 +391,77 @@ difficultyFilter.addEventListener("change", displayTrails);
 
 loadTrails();
 loadEvents();
+
+// ESPACE MEMBRE SATRAILGUIDE
+
+function generateMemberEmail(firstName, lastName) {
+  const normalize = text =>
+    text.trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+  return `${normalize(firstName)}.${normalize(lastName)}@satrailguide.invalid`;
+}
+
+// CRÉATION DE COMPTE
+document.getElementById("member-signup-form")
+  ?.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const form = event.target;
+    const message = document.getElementById("member-signup-message");
+    const firstName = form.elements.first_name.value.trim();
+    const lastName = form.elements.last_name.value.trim();
+    const password = form.elements.password.value;
+
+    message.textContent = "Création du compte en cours...";
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: generateMemberEmail(firstName, lastName),
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName
+        }
+      }
+    });
+
+    if (error) {
+      message.textContent = error.message;
+      return;
+    }
+
+    message.textContent = "Votre compte a été créé avec succès !";
+    form.reset();
+  });
+
+// CONNEXION
+document.getElementById("member-login-form")
+  ?.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const form = event.target;
+    const message = document.getElementById("member-login-message");
+
+    const firstName = form.elements.first_name.value.trim();
+    const lastName = form.elements.last_name.value.trim();
+    const password = form.elements.password.value;
+
+    message.textContent = "Connexion en cours...";
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: generateMemberEmail(firstName, lastName),
+      password
+    });
+
+    if (error) {
+      message.textContent = "Prénom, nom ou mot de passe incorrect.";
+      return;
+    }
+
+    message.textContent =
+      `Bienvenue ${data.user.user_metadata.first_name} !`;
+  });
