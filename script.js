@@ -519,7 +519,7 @@ async function loadMemberRegistrations() {
   const { data, error } = await supabaseClient
     .from("event_registrations")
     .select("id, event_id, created_at, events(title, event_date)")
-    .eq("participant_name", fullName);
+  .ilike("participant_name", fullName);
 
   if (error) {
     console.error("Erreur inscriptions membre :", error);
