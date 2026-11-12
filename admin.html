@@ -766,11 +766,11 @@ function renderEvents() {
             item.status === "Publié" ? "published" : "draft"
           }">${escapeHTML(item.status || "Brouillon")}</span>
 
-          <br>
-
-          <button onclick="viewRegistrations(${item.id})">
-            Voir les participants
-          </button>
+         <div style="margin-top: 24px;">
+  <button onclick="viewRegistrations(${item.id})">
+    Voir les participants
+  </button>
+</div>
         </div>
 
         <div>
