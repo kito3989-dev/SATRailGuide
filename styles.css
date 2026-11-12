@@ -75,6 +75,16 @@
   color: #a66a15;
 }
 
+.event-status.cancelled {
+  background: #fde8e7;
+  color: #b43d35;
+}
+
+.event-status.draft {
+  background: #eeeeee;
+  color: #666666;
+}
+
 /* DATE DES ÉVÉNEMENTS */
 
 .event-date-box {
