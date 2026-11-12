@@ -231,7 +231,15 @@ async function loadEvents() {
           </p>
         ` : ""}
 
-        <span class="event-status ${item.status === "Complet" ? "full" : "available"}">
+      <span class="event-status ${
+  item.status === "Complet"
+    ? "full"
+    : item.status === "Annulé"
+      ? "cancelled"
+      : item.status === "Brouillon"
+        ? "draft"
+        : "available"
+}">
           ${escapeHTML(item.status)}
         </span>
 
