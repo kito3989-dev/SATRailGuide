@@ -179,9 +179,15 @@ async function loadEvents() {
 
         <p>
           <strong>Date :</strong>
-          ${item.event_date
-            ? new Date(item.event_date).toLocaleString("fr-CA")
-            : "À déterminer"}
+         ${item.event_date
+  ? new Date(item.event_date).toLocaleString("fr-CA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  : "À déterminer"}
         </p>
 
         <p>
