@@ -134,56 +134,87 @@ function displayTrails() {
 // ==========================================
 
 async function loadEvents() {
-  const eventContainer = document.querySelector(".event-placeholder");
-
   const { data, error } = await supabaseClient
     .from("events")
     .select("*")
-    .eq("published", true)
+    .in("status", ["Publié", "Complet"])
     .order("event_date", { ascending: true });
 
   if (error) {
-    console.error("Erreur lors du chargement des événements :", error);
+    console.error("Erreur événements :", error.message);
     return;
   }
+
+  const container = document.querySelector("#events-grid");
+
+  if (!container) return;
 
   if (!data || data.length === 0) {
-    eventContainer.innerHTML = `
-      <div class="event-date">
-        <span>BIENTÔT</span>
-        <strong>+</strong>
-      </div>
-      <div>
-        <h3>De nouvelles sorties se préparent</h3>
-        <p>
-          Les prochaines randonnées collectives et activités guidées
-          seront annoncées ici.
-        </p>
-      </div>
+    container.innerHTML = `
+      <p>Aucun événement prévu pour le moment. Revenez bientôt !</p>
     `;
     return;
   }
 
-  eventContainer.innerHTML = data.map((event) => {
-    const date = event.event_date
-      ? new Date(event.event_date).toLocaleDateString("fr-CA", {
-          day: "2-digit",
-          month: "short"
-        })
-      : "À venir";
+  container.innerHTML = data.map(item => `
+    <article class="event-card">
 
-    return `
-      <div class="event-date">
-        <span>${escapeHTML(date)}</span>
-        <strong>+</strong>
+      ${item.image_url ? `
+        <img
+          src="${escapeHTML(item.image_url)}"
+          alt="${escapeHTML(item.title)}"
+          class="event-image"
+        >
+      ` : ""}
+
+      <div class="event-info">
+
+        <span class="event-category">
+          ${escapeHTML(item.category || "Événement")}
+        </span>
+
+        <h3>${escapeHTML(item.title)}</h3>
+
+        <p>${escapeHTML(item.description || "")}</p>
+
+        <p>
+          <strong>Date :</strong>
+          ${item.event_date
+            ? new Date(item.event_date).toLocaleString("fr-CA")
+            : "À déterminer"}
+        </p>
+
+        <p>
+          <strong>Lieu :</strong>
+          ${escapeHTML(item.location || "À déterminer")}
+        </p>
+
+        <p>
+          <strong>Durée :</strong>
+          ${item.duration_minutes
+            ? item.duration_minutes + " minutes"
+            : "À déterminer"}
+        </p>
+
+        <p>
+          <strong>Participants maximum :</strong>
+          ${item.max_participants || "Non limité"}
+        </p>
+
+        ${item.participation_conditions ? `
+          <p>
+            <strong>Conditions :</strong>
+            ${escapeHTML(item.participation_conditions)}
+          </p>
+        ` : ""}
+
+        <span class="event-status ${item.status === "Complet" ? "full" : "available"}">
+          ${escapeHTML(item.status)}
+        </span>
+
       </div>
-      <div>
-        <h3>${escapeHTML(event.title)}</h3>
-        <p>${escapeHTML(event.description || "")}</p>
-        <p>${escapeHTML(event.location || "")}</p>
-      </div>
-    `;
-  }).join("");
+    </article>
+  `).join("");
 }
 
 // ==========================================
