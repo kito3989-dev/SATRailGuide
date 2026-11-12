@@ -467,3 +467,21 @@ document.getElementById("member-dashboard").style.display = "block";
 document.getElementById("member-display-name").textContent =
   `${data.user.user_metadata.first_name} ${data.user.user_metadata.last_name}`;
   });
+
+// DÉCONNEXION MEMBRE
+document.getElementById("member-logout")
+  ?.addEventListener("click", async () => {
+
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      console.error("Erreur de déconnexion :", error);
+      return;
+    }
+
+    document.getElementById("member-dashboard").style.display = "none";
+    document.getElementById("member-login-form").reset();
+
+    document.getElementById("member-login-message").textContent =
+      "Vous êtes déconnecté.";
+  });
