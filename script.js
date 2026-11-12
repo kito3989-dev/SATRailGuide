@@ -554,7 +554,9 @@ async function loadMemberRegistrations() {
 
 // ANNULATION D'UNE INSCRIPTION
 document.addEventListener("click", async event => {
-  const button = event.target.closest(".cancel-registration");
+const button = event.target instanceof Element
+  ? event.target.closest(".cancel-registration")
+  : null;
 
   if (!button) return;
 
