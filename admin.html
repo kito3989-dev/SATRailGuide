@@ -601,6 +601,34 @@
     counts[registration.event_id] = (counts[registration.event_id] || 0) + 1;
   });
 
+  for (const item of events) {
+    const participantCount = counts[item.id] || 0;
+
+    if (
+      item.max_participants &&
+      (item.status === "Publié" || item.status === "Complet")
+    ) {
+      const newStatus =
+        participantCount >= item.max_participants
+          ? "Complet"
+          : "Publié";
+
+      if (item.status !== newStatus) {
+        const { error: updateError } = await db
+          .from("events")
+          .update({ status: newStatus })
+          .eq("id", item.id);
+
+        if (updateError) {
+          showMessage("Erreur de mise à jour du statut : " + updateError.message, true);
+          return;
+        }
+
+        item.status = newStatus;
+      }
+    }
+  }
+     
   events = events.map(item => ({
     ...item,
     registrationCount: counts[item.id] || 0
