@@ -466,6 +466,7 @@ document.getElementById("member-login-form")
 document.getElementById("member-dashboard").style.display = "block";
 document.getElementById("member-display-name").textContent =
   `${data.user.user_metadata.first_name} ${data.user.user_metadata.last_name}`;
+    await loadMemberRegistrations();
   });
 
 // DÉCONNEXION MEMBRE
@@ -499,6 +500,7 @@ async function restoreMemberSession() {
 
   document.getElementById("member-display-name").textContent =
     `${firstName} ${lastName}`;
+  await loadMemberRegistrations();
 }
 
 restoreMemberSession();
