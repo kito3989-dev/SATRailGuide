@@ -137,7 +137,7 @@ async function loadEvents() {
   const { data, error } = await supabaseClient
     .from("events")
     .select("*")
-    .in("status", ["Publié", "Complet"])
+    .in("status", ["Publié", "Complet", "Annulé"])
     .order("event_date", { ascending: true });
 
   if (error) {
