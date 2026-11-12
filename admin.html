@@ -802,7 +802,6 @@ function previewTrail() {
 }
   
   // AFFICHAGE DES RANDONNÉES
-```javascript
 function renderTrails() {
   $("trailList").innerHTML = trails.length
     ? trails.map(trail => `
@@ -998,54 +997,7 @@ function renderEvents() {
     await loadAll();
   }
 
-  function resetTrailForm() {
-    $("trailForm").reset();
-    $("trailId").value = "";
-    $("cancelTrailEdit").classList.add("hidden");
-  }
 
-  $("cancelTrailEdit").addEventListener("click", resetTrailForm);
-
-// AJOUT / MODIFICATION D'UN ÉVÉNEMENT
-
-$("eventForm").addEventListener("submit", async event => {
-  event.preventDefault();
-
-  const id = $("eventId").value;
-  const dateValue = $("eventDate").value;
-  const status = $("eventStatus").value;
-
-  const record = {
-    title: $("eventTitle").value.trim(),
-    category: $("eventCategory").value,
-    description: $("eventDescription").value.trim(),
-    location: $("eventLocation").value.trim(),
-    event_date: dateValue ? new Date(dateValue).toISOString() : null,
-    duration_minutes: $("eventDuration").value
-      ? Number($("eventDuration").value)
-      : null,
-    max_participants: $("eventMaxParticipants").value
-      ? Number($("eventMaxParticipants").value)
-      : null,
-    participation_conditions: $("eventConditions").value.trim(),
-    image_url: $("eventImage").value.trim(),
-    status: status,
-    published: status === "Publié"
-  };
-
-  const result = id
-    ? await db.from("events").update(record).eq("id", id)
-    : await db.from("events").insert(record);
-
-  if (result.error) {
-    showMessage(result.error.message, true);
-    return;
-  }
-
-  showMessage("Événement enregistré.");
-  resetEventForm();
-  await loadEvents();
-});
 
 function editEvent(id) {
   const item = events.find(event => event.id === id);
