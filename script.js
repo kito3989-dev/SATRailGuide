@@ -155,13 +155,13 @@ async function loadEvents() {
 
 console.log("Événements chargés :", data);
 
-  const { data: registrations, error: registrationError } =
-    await supabaseClient
-      .from("event_registrations")
-      .select("event_id");
+    const {
+    data: registrations,
+    error: registrationError
+  } = await supabaseClient.rpc("get_event_registration_counts");
 
   if (registrationError) {
-    console.error("Erreur inscriptions :", registrationError);
+    console.error("Erreur comptage inscriptions :", registrationError);
     return;
   }
 
@@ -169,7 +169,7 @@ console.log("Événements chargés :", data);
 
   (registrations || []).forEach(registration => {
     registrationCounts[registration.event_id] =
-      (registrationCounts[registration.event_id] || 0) + 1;
+      Number(registration.registration_count);
   });
 
   data.forEach(item => {
