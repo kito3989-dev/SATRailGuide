@@ -523,9 +523,10 @@
       return;
     }
 
-    setLoggedIn(true);
-    await loadAll();
-  }
+     setLoggedIn(true);
+  await loadAll();
+  setupAdminRealtime();
+}
 
   // CONNEXION
   $("loginForm").addEventListener("submit", async event => {
@@ -550,14 +551,24 @@
     setLoggedIn(true);
     showMessage("Connexion réussie.");
     await loadAll();
+  setupAdminRealtime();
+}
   });
 
   // DÉCONNEXION
-  $("logoutBtn").addEventListener("click", async () => {
-    await db.auth.signOut();
-    setLoggedIn(false);
-    showMessage("Vous êtes déconnecté.");
+ $("logoutBtn").addEventListener("click", async () => {
+
+  adminRealtimeChannels.forEach(channel => {
+    db.removeChannel(channel);
   });
+
+  adminRealtimeChannels = [];
+
+  await db.auth.signOut();
+
+  setLoggedIn(false);
+  showMessage("Vous êtes déconnecté.");
+});
 
   // ONGLETS
   document.querySelectorAll("[data-tab]").forEach(button => {
@@ -1317,6 +1328,83 @@ $("eventForm").addEventListener("submit", async event => {
 
   $("cancelPoiEdit").addEventListener("click", resetPointForm);
 
+// ==========================================
+// MISE À JOUR AUTOMATIQUE DE L'ADMINISTRATION
+// ==========================================
+
+let adminRealtimeChannels = [];
+
+function setupAdminRealtime() {
+    adminRealtimeChannels.forEach(channel => {
+    db.removeChannel(channel);
+  });
+
+  adminRealtimeChannels = [];
+
+  // Événements
+  const eventsChannel = db
+    .channel("admin-events-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "events"
+      },
+      async () => {
+        console.log("Admin : modification des événements détectée.");
+        await loadEvents();
+      }
+    )
+    .subscribe(status => {
+      console.log("Admin Realtime événements :", status);
+    });
+
+  // Inscriptions
+  const registrationsChannel = db
+    .channel("admin-registrations-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "event_registrations"
+      },
+      async () => {
+        console.log("Admin : modification des inscriptions détectée.");
+        await loadEvents();
+      }
+    )
+    .subscribe(status => {
+      console.log("Admin Realtime inscriptions :", status);
+    });
+
+  // Liste d'attente
+  const waitlistChannel = db
+    .channel("admin-waitlist-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "event_waitlist"
+      },
+      async () => {
+        console.log("Admin : modification de la liste d'attente détectée.");
+        await loadWaitlist();
+      }
+    )
+    .subscribe(status => {
+      console.log("Admin Realtime liste d'attente :", status);
+    });
+
+  adminRealtimeChannels = [
+    eventsChannel,
+    registrationsChannel,
+    waitlistChannel
+  ];
+}
+  
   // VÉRIFICATION DE LA SESSION AU DÉMARRAGE
   checkAdmin();
 </script>
