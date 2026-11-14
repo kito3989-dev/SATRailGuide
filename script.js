@@ -308,6 +308,40 @@ ${item.status === "Publié" ? `
   </form>
 ` : ""}
 
+${item.status === "Complet" ? `
+  <form class="event-waitlist-form" data-event-id="${item.id}">
+    <h4>Rejoindre la liste d'attente</h4>
+
+    <label>
+      Nom et prénom
+      <input
+        type="text"
+        name="participant_name"
+        required
+        maxlength="100"
+        placeholder="Votre nom"
+      >
+    </label>
+
+    <label>
+      Numéro de téléphone
+      <input
+        type="tel"
+        name="participant_phone"
+        required
+        maxlength="20"
+        placeholder="Votre numéro de téléphone"
+      >
+    </label>
+
+    <button type="submit" class="button">
+      Rejoindre la liste d'attente →
+    </button>
+
+    <p class="waitlist-message" aria-live="polite"></p>
+  </form>
+` : ""}
+
       </div>
     </article>
   `).join("");
