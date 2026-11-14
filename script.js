@@ -147,10 +147,13 @@ async function loadEvents() {
     .in("status", ["Publié", "Complet", "Annulé"])
     .order("event_date", { ascending: true });
 
-  if (error) {
-    console.error("Erreur événements :", error.message);
-    return;
-  }
+ if (error) {
+  console.error("Erreur événements :", error);
+  alert("Erreur de chargement des événements : " + error.message);
+  return;
+}
+
+console.log("Événements chargés :", data);
 
   const { data: registrations, error: registrationError } =
     await supabaseClient
