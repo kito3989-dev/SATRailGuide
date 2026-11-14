@@ -810,6 +810,29 @@
     : "<p>Aucune personne sur la liste d'attente.</p>";
 }
 
+async function deleteWaitlistEntry(id) {
+  if (!confirm("Retirer cette personne de la liste d'attente ?")) {
+    return;
+  }
+
+  const { error } = await db
+    .from("event_waitlist")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    showMessage(
+      "Erreur lors de la suppression : " + error.message,
+      true
+    );
+    return;
+  }
+
+  showMessage("Personne retirée de la liste d'attente.");
+
+  await loadWaitlist();
+}
+  
   function statusBadge(published) {
     return published
       ? '<span class="status published">Publié</span>'
