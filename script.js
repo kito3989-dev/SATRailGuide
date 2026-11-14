@@ -424,33 +424,25 @@ document.addEventListener("submit", async event => {
   button.textContent = "Inscription en cours...";
   message.textContent = "";
 
-  const { error } = await supabaseClient
-    .from("event_waitlist")
-    .insert({
-      event_id: eventId,
-      participant_name: participantName,
-      participant_phone: participantPhone
-    });
-
-  if (error) {
-   console.error("Erreur liste d'attente :", JSON.stringify(error, null, 2));
-
-    if (error.code === "23505") {
-      message.textContent =
-        "Vous êtes déjà sur la liste d'attente.";
-    } else {
-      message.textContent =
-        "Impossible de rejoindre la liste d'attente.";
+  const { data, error } = await supabaseClient.rpc(
+    "join_event_waitlist",
+    {
+      p_event_id: eventId,
+      p_participant_name: participantName,
+      p_participant_phone: participantPhone
     }
+  );
+
+  if (error || !data?.success) {
+    message.textContent =
+      data?.message || "Impossible de rejoindre la liste d'attente.";
 
     button.disabled = false;
     button.textContent = "Rejoindre la liste d'attente →";
     return;
   }
 
-  message.textContent =
-    "Vous avez rejoint la liste d'attente avec succès !";
-
+  message.textContent = data.message;
   button.textContent = "Inscription confirmée";
   form.reset();
 });
