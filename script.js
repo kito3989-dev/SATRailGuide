@@ -640,13 +640,10 @@ async function loadMemberRegistrations() {
 
   if (!userData.user) return;
 
-  const fullName =
-    `${userData.user.user_metadata.first_name} ${userData.user.user_metadata.last_name}`;
-
-  const { data, error } = await supabaseClient
+   const { data, error } = await supabaseClient
     .from("event_registrations")
     .select("id, event_id, created_at, events(title, event_date)")
-  .ilike("participant_name", fullName);
+    .eq("member_id", userData.user.id);
 
   if (error) {
     console.error("Erreur inscriptions membre :", error);
