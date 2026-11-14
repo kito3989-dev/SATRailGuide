@@ -407,6 +407,14 @@
 
   <div id="waitlistList"></div>
 </section>
+
+    <!-- HISTORIQUE DES PROMOTIONS -->
+<section id="history" class="panel tab-content hidden">
+  <h2>Historique des promotions</h2>
+  <p>Retrouvez les personnes automatiquement promues depuis la liste d'attente.</p>
+
+  <div id="waitlistHistoryList"></div>
+</section>
     
     <!-- POINTS D'INTÉRÊT -->
     <section id="points" class="panel tab-content hidden">
@@ -809,6 +817,34 @@
         `;
       }).join("")
     : "<p>Aucune personne sur la liste d'attente.</p>";
+}
+
+  async function loadWaitlistHistory() {
+  const { data, error } = await db
+    .from("event_waitlist_history")
+    .select("*")
+    .order("promoted_at", { ascending: false });
+
+  if (error) {
+    showMessage(
+      "Erreur lors du chargement de l'historique : " + error.message,
+      true
+    );
+    return;
+  }
+
+  $("waitlistHistoryList").innerHTML = data.length
+    ? data.map(item => `
+        <div class="item">
+          <div>
+            <strong>${escapeHTML(item.participant_name)}</strong>
+            <p>Téléphone : ${escapeHTML(item.participant_phone)}</p>
+            <p>Événement : ${escapeHTML(item.event_title)}</p>
+            <p>Promotion : ${new Date(item.promoted_at).toLocaleString("fr-CA")}</p>
+          </div>
+        </div>
+      `).join("")
+    : "<p>Aucune promotion enregistrée pour le moment.</p>";
 }
 
 async function deleteWaitlistEntry(id) {
