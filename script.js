@@ -398,6 +398,63 @@ document.addEventListener("submit", async (event) => {
   await loadEvents();
 });
 
+// INSCRIPTIONS À LA LISTE D'ATTENTE
+
+document.addEventListener("submit", async event => {
+  const form = event.target instanceof Element
+    ? event.target.closest(".event-waitlist-form")
+    : null;
+
+  if (!form) return;
+
+  event.preventDefault();
+
+  const button = form.querySelector('button[type="submit"]');
+  const message = form.querySelector(".waitlist-message");
+
+  const participantName =
+    form.elements.participant_name.value.trim();
+
+  const participantPhone =
+    form.elements.participant_phone.value.trim();
+
+  const eventId = Number(form.dataset.eventId);
+
+  button.disabled = true;
+  button.textContent = "Inscription en cours...";
+  message.textContent = "";
+
+  const { error } = await supabaseClient
+    .from("event_waitlist")
+    .insert({
+      event_id: eventId,
+      participant_name: participantName,
+      participant_phone: participantPhone
+    });
+
+  if (error) {
+    console.error("Erreur liste d'attente :", error);
+
+    if (error.code === "23505") {
+      message.textContent =
+        "Vous êtes déjà sur la liste d'attente.";
+    } else {
+      message.textContent =
+        "Impossible de rejoindre la liste d'attente.";
+    }
+
+    button.disabled = false;
+    button.textContent = "Rejoindre la liste d'attente →";
+    return;
+  }
+
+  message.textContent =
+    "Vous avez rejoint la liste d'attente avec succès !";
+
+  button.textContent = "Inscription confirmée";
+  form.reset();
+});
+
 // ==========================================
 // PROTECTION DU TEXTE AFFICHÉ
 // ==========================================
