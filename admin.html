@@ -566,14 +566,17 @@
   });
 
   // CHARGEMENT DES DONNÉES
- async function loadAll() {
+async function loadAll() {
   await Promise.all([
     loadTrails(),
     loadEvents(),
     loadPoints()
   ]);
 
-  await loadWaitlist();
+  await Promise.all([
+    loadWaitlist(),
+    loadWaitlistHistory()
+  ]);
 }
 
   async function loadTrails() {
