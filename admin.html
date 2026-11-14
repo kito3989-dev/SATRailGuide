@@ -557,13 +557,15 @@
   });
 
   // CHARGEMENT DES DONNÉES
-  async function loadAll() {
-    await Promise.all([
-      loadTrails(),
-      loadEvents(),
-      loadPoints()
-    ]);
-  }
+ async function loadAll() {
+  await Promise.all([
+    loadTrails(),
+    loadEvents(),
+    loadPoints()
+  ]);
+
+  await loadWaitlist();
+}
 
   async function loadTrails() {
     const { data, error } = await db
