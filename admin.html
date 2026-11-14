@@ -464,10 +464,18 @@
 
   const ADMIN_UID = "81207461-5002-49f0-950e-92565ea39efd";
 
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+ const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storageKey: "satrailguide-admin-auth"
+    }
+  }
+);
 
   let trails = [];
   let events = [];
