@@ -744,7 +744,9 @@ supabaseClient
       await loadEvents();
     }
   )
-  .subscribe();
+   .subscribe((status) => {
+    console.log("Statut Realtime événements :", status);
+  });
 
 // ==========================================
 // MISE À JOUR AUTOMATIQUE DES INSCRIPTIONS
@@ -764,4 +766,6 @@ supabaseClient
       await loadEvents();
     }
   )
-  .subscribe();
+   .subscribe((status) => {
+    console.log("Statut Realtime inscriptions :", status);
+  });
