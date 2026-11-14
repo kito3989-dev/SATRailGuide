@@ -433,7 +433,7 @@ document.addEventListener("submit", async event => {
     });
 
   if (error) {
-    console.error("Erreur liste d'attente :", error);
+   console.error("Erreur liste d'attente :", JSON.stringify(error, null, 2));
 
     if (error.code === "23505") {
       message.textContent =
