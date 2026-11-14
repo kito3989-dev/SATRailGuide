@@ -528,32 +528,31 @@
   setupAdminRealtime();
 }
 
-  // CONNEXION
-  $("loginForm").addEventListener("submit", async event => {
-    event.preventDefault();
+ // CONNEXION
+$("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-    const { data, error } = await db.auth.signInWithPassword({
-      email: $("email").value,
-      password: $("password").value
-    });
-
-    if (error) {
-      showMessage("Connexion impossible : " + error.message, true);
-      return;
-    }
-
-    if (data.user.id !== ADMIN_UID) {
-      await db.auth.signOut();
-      showMessage("Ce compte n'est pas autorisé.", true);
-      return;
-    }
-
-    setLoggedIn(true);
-    showMessage("Connexion réussie.");
-    await loadAll();
-  setupAdminRealtime();
-}
+  const { data, error } = await db.auth.signInWithPassword({
+    email: $("email").value,
+    password: $("password").value
   });
+
+  if (error) {
+    showMessage("Connexion impossible : " + error.message, true);
+    return;
+  }
+
+  if (data.user.id !== ADMIN_UID) {
+    await db.auth.signOut();
+    showMessage("Ce compte n'est pas autorisé.", true);
+    return;
+  }
+
+  setLoggedIn(true);
+  showMessage("Connexion réussie.");
+  await loadAll();
+  setupAdminRealtime();
+});
 
   // DÉCONNEXION
  $("logoutBtn").addEventListener("click", async () => {
