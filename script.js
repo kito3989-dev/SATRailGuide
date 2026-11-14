@@ -172,6 +172,8 @@ async function loadEvents() {
       item.status = "Complet";
     }
   });
+
+const member = await getConnectedMember();
   
   const container = document.querySelector("#events-grid");
 
@@ -274,7 +276,7 @@ async function loadEvents() {
           ${escapeHTML(item.status)}
         </span>
 
-${item.status === "Publié" ? `
+${item.status === "Publié" && member ? `
   <form class="event-registration-form" data-event-id="${item.id}">
     <h4>Participer à cet événement</h4>
 
@@ -306,9 +308,14 @@ ${item.status === "Publié" ? `
 
     <p class="registration-message" aria-live="polite"></p>
   </form>
+` : item.status === "Publié" ? `
+  <p class="login-required">
+    Vous devez être connecté pour participer à cet événement.
+    <a href="#espace-membre">Se connecter à mon espace membre</a>
+  </p>
 ` : ""}
 
-${item.status === "Complet" ? `
+${item.status === "Complet" && member ? `
   <form class="event-waitlist-form" data-event-id="${item.id}">
     <h4>Rejoindre la liste d'attente</h4>
 
@@ -340,7 +347,12 @@ ${item.status === "Complet" ? `
 
     <p class="waitlist-message" aria-live="polite"></p>
   </form>
-` : ""}
+` : item.status === "Complet" ? `
+  <p class="login-required">
+    Vous devez être connecté pour rejoindre la liste d'attente.
+    <a href="#espace-membre">Se connecter à mon espace membre</a>
+  </p>
+  ` : ""}
 
       </div>
     </article>
@@ -351,12 +363,32 @@ ${item.status === "Complet" ? `
 // INSCRIPTIONS AUX ÉVÉNEMENTS
 // ==========================================
 
+async function getConnectedMember() {
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error || !data.user) {
+    return null;
+  }
+
+  return data.user;
+}
+
 document.addEventListener("submit", async (event) => {
   const form = event.target.closest(".event-registration-form");
 
   if (!form) return;
 
   event.preventDefault();
+
+  const member = await getConnectedMember();
+
+  if (!member) {
+    alert("Vous devez vous connecter à votre espace membre avant de vous inscrire.");
+    document.getElementById("espace-membre").scrollIntoView({
+      behavior: "smooth"
+    });
+    return;
+  }
 
   const button = form.querySelector('button[type="submit"]');
   const message = form.querySelector(".registration-message");
@@ -408,6 +440,18 @@ document.addEventListener("submit", async event => {
   if (!form) return;
 
   event.preventDefault();
+
+  const member = await getConnectedMember();
+
+if (!member) {
+  alert("Vous devez vous connecter à votre espace membre avant de rejoindre une liste d'attente.");
+
+  document.getElementById("espace-membre").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  return;
+}
 
   const button = form.querySelector('button[type="submit"]');
   const message = form.querySelector(".waitlist-message");
