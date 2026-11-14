@@ -594,6 +594,7 @@ document.getElementById("member-dashboard").style.display = "block";
 document.getElementById("member-display-name").textContent =
   `${data.user.user_metadata.first_name} ${data.user.user_metadata.last_name}`;
     await loadMemberRegistrations();
+    await loadEvents();
   });
 
 // DÉCONNEXION MEMBRE
@@ -612,6 +613,7 @@ document.getElementById("member-logout")
 
     document.getElementById("member-login-message").textContent =
       "Vous êtes déconnecté.";
+        await loadEvents();
   });
 
 // RESTAURATION DE LA SESSION MEMBRE
@@ -628,6 +630,7 @@ async function restoreMemberSession() {
   document.getElementById("member-display-name").textContent =
     `${firstName} ${lastName}`;
   await loadMemberRegistrations();
+  await loadEvents();
 }
 
 restoreMemberSession();
