@@ -725,3 +725,43 @@ const button = event.target instanceof Element
   await loadMemberRegistrations();
   await loadEvents();
 });
+
+// ==========================================
+// MISE À JOUR AUTOMATIQUE DES ÉVÉNEMENTS
+// ==========================================
+
+supabaseClient
+  .channel("public-events-updates")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "events"
+    },
+    async () => {
+      console.log("Mise à jour des événements détectée.");
+      await loadEvents();
+    }
+  )
+  .subscribe();
+
+// ==========================================
+// MISE À JOUR AUTOMATIQUE DES INSCRIPTIONS
+// ==========================================
+
+supabaseClient
+  .channel("public-registrations-updates")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "event_registrations"
+    },
+    async () => {
+      console.log("Modification des inscriptions détectée.");
+      await loadEvents();
+    }
+  )
+  .subscribe();
