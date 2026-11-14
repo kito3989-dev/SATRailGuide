@@ -769,6 +769,45 @@
     renderPoints();
   }
 
+  async function loadWaitlist() {
+  const { data, error } = await db
+    .from("event_waitlist")
+    .select("id, event_id, participant_name, participant_phone, created_at")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    showMessage(
+      "Erreur lors du chargement de la liste d'attente : " + error.message,
+      true
+    );
+    return;
+  }
+
+  $("waitlistList").innerHTML = data.length
+    ? data.map(person => {
+        const event = events.find(
+          item => String(item.id) === String(person.event_id)
+        );
+
+        return `
+          <div class="item">
+            <div>
+              <strong>${escapeHTML(person.participant_name)}</strong>
+              <p>Téléphone : ${escapeHTML(person.participant_phone)}</p>
+              <p>Événement : ${escapeHTML(event?.title || "Événement introuvable")}</p>
+              <p>Ajouté le : ${new Date(person.created_at).toLocaleString("fr-CA")}</p>
+            </div>
+            <div>
+              <button class="danger" onclick="deleteWaitlistEntry(${person.id})">
+                Retirer
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("")
+    : "<p>Aucune personne sur la liste d'attente.</p>";
+}
+
   function statusBadge(published) {
     return published
       ? '<span class="status published">Publié</span>'
