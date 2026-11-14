@@ -1398,10 +1398,30 @@ function setupAdminRealtime() {
       console.log("Admin Realtime liste d'attente :", status);
     });
 
+  // Historique des promotions
+  const historyChannel = db
+    .channel("admin-waitlist-history-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "event_waitlist_history"
+      },
+      async () => {
+        console.log("Admin : modification de l'historique détectée.");
+        await loadWaitlistHistory();
+      }
+    )
+    .subscribe(status => {
+      console.log("Admin Realtime historique :", status);
+    });
+
   adminRealtimeChannels = [
     eventsChannel,
     registrationsChannel,
-    waitlistChannel
+    waitlistChannel,
+    historyChannel
   ];
 }
   
